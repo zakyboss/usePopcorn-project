@@ -1,4 +1,4 @@
-import { Children, useState } from "react";
+import { Children, useEffect, useState } from "react";
 
 const tempMovieData = [
   {
@@ -116,7 +116,7 @@ return (
    }
 
    function MovieLists({movies}){
-
+    
 return (
   <ul className="list">
   {movies?.map((movie) => (
