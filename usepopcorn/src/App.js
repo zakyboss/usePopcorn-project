@@ -51,29 +51,64 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 const KEY = "98f08ad2"
 export default function App() {
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
-      useEffect(function(){
-        async function fetchMovies(){
-        const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=Hotel`)
-        const data = await res.json();
-        setMovies(data.Search)
-        // .then(res=> res.json()).then(data=> setMovies(data.Search))
+  const [isLoading, setIsLoading]=useState(false)
+  const [error, setError]= useState("")
+     
+            
+  useEffect(function(){
+       
+          async function fetchMovies(){
+            try {
+              setIsLoading(true);
+                const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+                     if(!res.ok){
+                      throw new Error('Something went wrong With getting The movies')
+                     }
 
+                        const data = await res.json();
+                        if (data.Response === 'False') {
+                          throw new Error(data.Error || "No movies found for the given query.");
+                        }
+        
+                          setMovies(data.Search)
+  // setIsLoading(false)
+
+          }catch (err){
+            console.log("Error caught:", err.message)     ;
+                   setError(err.message)
+            setMovies([])
+          }finally{
+            setIsLoading(false)
+            setError("");         
+
+          }
         }
-               fetchMovies()
-      },[])
+          if(query.length<2){
+             setMovies([]);
+             setError("");
+             return ;
+          }
+        fetchMovies()
+
+      },[query])
   return (
     <>
      <Navbar>
-     <Search/>
-     <NumResults movies = {movies}/>
+     <Search  query= {query} setQuery={setQuery}/>
+     {!error && <NumResults movies={movies} />}
      </Navbar>
 
      <Main>
      <Box>
-     <MovieLists movies={movies}/>
-     </Box>
+
+     {isLoading&& <Loader/>}
+     {!isLoading&&!error&&<MovieLists movies={movies} />}
+     {error&& <Error message={error} />}
+     
+        </Box>
      <Box>
      <Summary watched= {watched}/>
            <WatchedMovieList watched= {watched} />
@@ -85,8 +120,7 @@ export default function App() {
   );
 }
 
- function Search(){
-  const [query, setQuery] = useState("");
+ function Search({query,setQuery}){
   return (
     <input
     className="search"
@@ -235,4 +269,15 @@ return (
     )
    }
  
-
+    function Loader(){
+        return(
+          <p className="loader">Loading...</p>
+        )
+    }
+  function Error({message}){
+      return (
+        <p className="error">
+          <span>{message}</span>
+        </p>
+      )
+  }
