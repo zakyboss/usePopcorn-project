@@ -1,5 +1,5 @@
 import { Children, useEffect, useState } from "react";
-
+import StarsRating from "./Stars";
 const tempMovieData = [
   {
     imdbID: "tt1375666",
@@ -273,8 +273,15 @@ function MovieDetails({ selectedId, onCloseMovie, movie, setMovie }) {
             <p>{genre}</p>
             <p>🌟{rating}</p>
           </h2>
+          <StarsRating maxRating={5} messages={["Awful", "Bad", "Good", "Better", "Amazing"]} />
         </div>
       </header>
+      <section>
+        <p><em>{plot}</em></p>
+        <p>Starring {actors}</p>
+         <p>Directors {director}</p>
+        <p>{runtime}</p>
+      </section>
     </div>
   );
 }
@@ -314,6 +321,7 @@ function WatchedMovieList({ watched }) {
         <li key={movie.imdbID}>
           <img src={movie.Poster} alt={`${movie.Title} poster`} />
           <h3>{movie.Title}</h3>
+          
           <div>
             <p>
               <span>⭐️</span>
