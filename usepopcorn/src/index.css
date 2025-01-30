@@ -379,3 +379,13 @@ EMPTY STAR
 </svg>
 
 */
+.mode {
+  width: 40px;
+  background-color: grey;
+  color: gold;
+}
+
+.lightMode {
+  background-color: white;
+  
+}
