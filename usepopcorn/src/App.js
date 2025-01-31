@@ -59,7 +59,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState("tt0424095");
   const [movie, setMovie] = useState({});
   const [userRating, setUserRating] = useState(0);
-
+  const [title, setTitle] = useState("");
   function handleAddWatched(movie) {
     setWatched((watched) => [...watched, movie]);
     setSelectedId("");
@@ -117,6 +117,21 @@ export default function App() {
       ...watched.filter((movie) => movie.imdbID !== id),
     ]);
   }
+  //
+  useEffect(() => {
+    if (!selectedId) {
+      return;
+    }
+    const movieBeingWatched = movies.find(
+      (movie) => movie.imdbID === selectedId
+    );
+    if (!movieBeingWatched) {
+      return;
+    }
+    setTitle(() => movieBeingWatched.Title);
+  }, [selectedId, setTitle]);
+
+ 
   return (
     <>
       <Navbar>
@@ -266,7 +281,7 @@ function MovieDetails({
         const data = await res.json();
 
         setMovie(data);
-        console.log(movie);
+        // console.log(movie);
         setLoading(false);
       }
 
@@ -314,7 +329,6 @@ function MovieDetails({
   const userWatchedRating = watched.filter(
     (movie) => movie.imdbID === selectedId
   )[0];
-  console.log(userWatchedRating);
 
   return (
     <div className="details">
@@ -435,7 +449,7 @@ function WatchedMovieList({ watched, onDeleteWatched }) {
               <span>{movie.runtime} min</span>
             </p>
             <button
-            className="btn-delete"
+              className="btn-delete"
               onClick={() => onDeleteWatched(movie.imdbID)}
             >
               X
