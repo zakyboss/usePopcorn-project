@@ -131,7 +131,12 @@ export default function App() {
     setTitle(() => movieBeingWatched.Title);
   }, [selectedId, setTitle]);
 
- 
+  useEffect(() => {
+    if (!title) {
+      return;
+    }
+    document.title = `Movie:${title}`;
+  }, [title]);
   return (
     <>
       <Navbar>
