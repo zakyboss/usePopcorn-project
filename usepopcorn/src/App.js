@@ -112,12 +112,13 @@ export default function App() {
   function handleCloseMovie() {
     setSelectedId(null);
   }
+  // Delete watched movie from watched movie list
   function handleDeleteWatched(id) {
     setWatched((watched) => [
       ...watched.filter((movie) => movie.imdbID !== id),
     ]);
   }
-  //
+  //     Updating movie title
   useEffect(() => {
     if (!selectedId) {
       return;
@@ -129,13 +130,21 @@ export default function App() {
       return;
     }
     setTitle(() => movieBeingWatched.Title);
+
+    return () => {
+      setTitle("");
+    };
   }, [selectedId, setTitle]);
 
   useEffect(() => {
+    const originalTitle = document.title;
     if (!title) {
       return;
     }
     document.title = `Movie:${title}`;
+    return function () {
+      document.title = originalTitle;
+    };
   }, [title]);
   return (
     <>
@@ -222,7 +231,7 @@ function Navbar({ children }) {
 
 function MovieLists({ movies, handleSelectID }) {
   return (
-    <li className="list list-movies">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
         <Movie
           movie={movie}
@@ -230,7 +239,7 @@ function MovieLists({ movies, handleSelectID }) {
           handleSelectID={handleSelectID}
         />
       ))}
-    </li>
+    </ul>
   );
 }
 function Movie({ movie, handleSelectID }) {
